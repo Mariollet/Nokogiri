@@ -2,7 +2,7 @@ require 'nokogiri'
 require 'open-uri'
 require 'pp'
 
-def get_mairie_names
+def get_mairie_names #méthode pour scrapper les noms de toutes les mairies
     page = Nokogiri::HTML(open("http://annuaire-des-mairies.com/val-d-oise.html"))
     mairie_name = []
     mairie = page.xpath("//a[@class='lientxt']")
@@ -10,7 +10,7 @@ def get_mairie_names
 	return  mairie_name
 end
 
-def get_mairie_urls
+def get_mairie_urls #méthode pour scrapper l'url de toutes les mairies
 	page = Nokogiri::HTML(open("http://annuaire-des-mairies.com/val-d-oise.html"))
 	url_array = []
 	urls = page.xpath('//*[@class="lientxt"]/@href')
@@ -21,16 +21,17 @@ def get_mairie_urls
 	return url_array
 end
 
-def get_mairie_emails(url = get_mairie_urls)
+def get_mairie_emails #méthode pour scrapper les emails de toutes les mairies
+	url = get_mairie_urls
 	email = []
-	url.length.times do |num|
-		page = Nokogiri::HTML(open(url[num]))
+	url.length.times do |index|
+		page = Nokogiri::HTML(open(url[index]))
 		email << page.xpath('//*[contains(text(), "@")]').text
 	end
 	return email
 end
 
-def mairie_info
+def mairie_info #méthode pour associés leurs noms avc leurs emails
 	names = get_mairie_names
 	emails = get_mairie_emails
 	mairie_info = []
@@ -42,7 +43,7 @@ end
 def perform
 	#print get_mairie_names
 	#print get_mairie_urls
-	#print get_mairie_emails(url = get_mairie_urls)
+	#print get_mairie_emails
 	puts "Voici les noms et les mails de toutes les mairies du Val d'Oise :"
 	pp mairie_info
 end
